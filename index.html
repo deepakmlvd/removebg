@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="description" content="Free online image background remover and photo editor. Remove backgrounds from PNG, JPG, and WebP images privately in your browser." />
+  <meta name="keywords" content="background remover, remove image background, remove photo background, transparent PNG maker, online photo editor, free background removal" />
+  <title>Free Background Remover Online | Cutout Image Editor</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2208763018652673"
+    crossorigin="anonymous"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BCKTBN727F"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag("js", new Date());
+    gtag("config", "G-BCKTBN727F");
+  </script>
+</head>
+<body>
+  <div id="fileBanner" class="banner" hidden>
+    Open this tool through the local server so the worker and GPU runtime can start.
+    In this folder run <code>.\start.ps1</code>, then use <code>http://127.0.0.1:8765</code>.
+  </div>
+  <header class="top">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <div>
+        <strong>Cutout</strong>
+        <span>Free online background remover and photo editor</span>
+      </div>
+    </div>
+  </header>
+  <section class="ad-rail" aria-label="Advertisement">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle ad-slot"
+      style="display:block"
+      data-ad-client="ca-pub-2208763018652673"
+      data-ad-slot="auto"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+  </section>
+  <main class="workspace">
+    <aside class="panel">
+      <section>
+        <h2>Source</h2>
+        <div class="button-row">
+          <button type="button" id="openBtn" class="primary">Open image</button>
+        </div>
+        <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp,image/bmp,image/gif" hidden />
+        <p class="hint">Drop a photo anywhere, or paste one with Ctrl+V.</p>
+      </section>
+      <section>
+        <h2>Engine</h2>
+        <label class="field">
+          <span class="row"><span>Speed profile</span></span>
+          <select id="profile">
+            <option value="fast">Fast — quickest on this computer</option>
+            <option value="detail">Detail — full model, finer edges</option>
+          </select>
+        </label>
+        <button type="button" id="runBtn" class="primary wide" disabled>Remove background</button>
+      </section>
+      <section>
+        <h2>Download</h2>
+        <label class="field">
+          <span class="row"><span>Format</span></span>
+          <select id="format">
+            <option value="image/png">PNG — keeps transparency</option>
+            <option value="image/webp">WebP — keeps transparency</option>
+            <option value="image/jpeg">JPEG — flattens transparency</option>
+          </select>
+        </label>
+        <label class="field" id="qualityRow">
+          <span class="row"><span>Quality</span><output id="qualityOut">0.92</output></span>
+          <input id="quality" type="range" min="0.5" max="1" step="0.01" value="0.92" />
+        </label>
+        <p id="jpegNote" class="hint" hidden>JPEG cannot store transparency. A clear background is flattened onto white.</p>
+        <div id="exportList" class="export-list"></div>
+        <button type="button" id="copyBtn" disabled>Copy PNG</button>
+        <p class="hint">Sizes run from 25% (lowest) to 200% (highest). 100% is one source pixel per output pixel. Ctrl+S saves the 100% file.</p>
+        <p class="fine">Segmentation uses @imgly/background-removal (AGPL) with ONNX Runtime Web, all served from this folder. Nothing is uploaded.</p>
+      </section>
+    </aside>
+    <section class="stage" id="viewport">
+      <div id="emptyState" class="empty">
+        <div>
+          <strong>Drop a photo to cut it out</strong>
+          <p>Transparent PNG, new backgrounds, edge refine, and exports from the smallest size to 2×.</p>
+        </div>
+      </div>
+      <div id="canvasWrap" class="canvas-wrap" hidden>
+        <canvas id="originalCanvas"></canvas>
+        <canvas id="viewCanvas"></canvas>
+      </div>
+      <div id="brushCursor" class="brush-cursor" hidden></div>
+      <div class="stage-bar">
+        <label class="compare">
+          <span>Original</span>
+          <input id="compare" type="range" min="0" max="100" value="100" />
+          <span>Cutout</span>
+        </label>
+        <div class="zoom-controls">
+          <button type="button" id="zoomOut" aria-label="Zoom out">−</button>
+          <span id="zoomLabel">Fit</span>
+          <button type="button" id="zoomIn" aria-label="Zoom in">+</button>
+          <button type="button" id="fitBtn">Fit</button>
+        </div>
+        <span id="dims" class="dims"></span>
+      </div>
+      <div id="progress" class="progress" hidden>
+        <div id="progressBar"></div>
+      </div>
+      <p id="status" class="status" aria-live="polite">Ready.</p>
+    </section>
+    <aside class="panel panel-right">
+      <section>
+        <h2>Edge</h2>
+        <label class="field">
+          <span class="row"><span>Shift edge</span><output id="shiftOut">0</output></span>
+          <input id="shift" type="range" min="-32" max="32" step="1" value="0" />
+        </label>
+        <label class="field">
+          <span class="row"><span>Feather</span><output id="featherOut">0</output></span>
+          <input id="feather" type="range" min="0" max="40" step="0.5" value="0" />
+        </label>
+        <label class="field">
+          <span class="row"><span>Contrast</span><output id="contrastOut">1.00</output></span>
+          <input id="contrast" type="range" min="0.4" max="3" step="0.05" value="1" />
+        </label>
+        <label class="field">
+          <span class="row"><span>Defringe</span><output id="defringeOut">0</output></span>
+          <input id="defringe" type="range" min="0" max="24" step="1" value="0" />
+        </label>
+        <label class="check"><input id="invert" type="checkbox" /> Invert mask</label>
+      </section>
+      <section>
+        <h2>Brush</h2>
+        <div class="button-row" id="tools">
+          <button type="button" data-tool="pan" class="is-on">Pan</button>
+          <button type="button" data-tool="erase">Erase</button>
+          <button type="button" data-tool="restore">Restore</button>
+        </div>
+        <label class="field">
+          <span class="row"><span>Size</span><output id="brushSizeOut">28</output></span>
+          <input id="brushSize" type="range" min="4" max="180" step="1" value="28" />
+        </label>
+        <label class="field">
+          <span class="row"><span>Hardness</span><output id="brushHardnessOut">0.35</output></span>
+          <input id="brushHardness" type="range" min="0" max="1" step="0.05" value="0.35" />
+        </label>
+        <label class="field">
+          <span class="row"><span>Strength</span><output id="brushStrengthOut">0.85</output></span>
+          <input id="brushStrength" type="range" min="0.1" max="1" step="0.05" value="0.85" />
+        </label>
+        <div class="button-row">
+          <button type="button" id="undoBtn" disabled>Undo</button>
+          <button type="button" id="redoBtn" disabled>Redo</button>
+          <button type="button" id="resetBtn" disabled>Reset mask</button>
+        </div>
+        <p class="hint">E erase, R restore, H pan, [ ] size, Ctrl+Z undo.</p>
+      </section>
+      <section>
+        <h2>Subject</h2>
+        <label class="field">
+          <span class="row"><span>Scale</span><output id="subjectScaleOut">100%</output></span>
+          <input id="subjectScale" type="range" min="0.4" max="1.6" step="0.01" value="1" />
+        </label>
+        <label class="field">
+          <span class="row"><span>Nudge X</span><output id="offsetXOut">0</output></span>
+          <input id="offsetX" type="range" min="-40" max="40" step="1" value="0" />
+        </label>
+        <label class="field">
+          <span class="row"><span>Nudge Y</span><output id="offsetYOut">0</output></span>
+          <input id="offsetY" type="range" min="-40" max="40" step="1" value="0" />
+        </label>
+        <label class="check"><input id="crop" type="checkbox" /> Crop to subject</label>
+        <label class="field">
+          <span class="row"><span>Padding</span><output id="paddingOut">8%</output></span>
+          <input id="padding" type="range" min="0" max="40" step="1" value="8" />
+        </label>
+      </section>
+      <section>
+        <h2>Background</h2>
+        <div class="swatches" id="swatches">
+          <button type="button" data-preset="transparent">Clear</button>
+          <button type="button" data-preset="white">White</button>
+          <button type="button" data-preset="gray">Gray</button>
+          <button type="button" data-preset="black">Black</button>
+          <button type="button" data-preset="studio">Studio</button>
+          <button type="button" data-preset="dusk">Dusk</button>
+          <button type="button" data-preset="blur">Blur</button>
+          <button type="button" data-preset="shop">Shop</button>
+        </div>
+        <label class="field">
+          <span class="row"><span>Type</span></span>
+          <select id="bg">
+            <option value="transparent">Transparent</option>
+            <option value="color">Solid color</option>
+            <option value="gradient">Gradient</option>
+            <option value="blur">Blurred original</option>
+            <option value="image">Your photo</option>
+          </select>
+        </label>
+        <label class="field" data-bg-field="color gradient">
+          <span class="row"><span>Color</span></span>
+          <input id="color" type="color" value="#ffffff" />
+        </label>
+        <label class="field" data-bg-field="gradient">
+          <span class="row"><span>Second color</span></span>
+          <input id="color2" type="color" value="#d6f25c" />
+        </label>
+        <label class="field" data-bg-field="gradient">
+          <span class="row"><span>Angle</span><output id="angleOut">135°</output></span>
+          <input id="angle" type="range" min="0" max="360" step="1" value="135" />
+        </label>
+        <label class="field" data-bg-field="blur">
+          <span class="row"><span>Blur</span><output id="blurOut">24</output></span>
+          <input id="blur" type="range" min="0" max="80" step="1" value="24" />
+        </label>
+        <label class="field" data-bg-field="image">
+          <span class="row"><span>Background photo</span></span>
+          <input id="bgFile" type="file" accept="image/*" />
+        </label>
+      </section>
+      <section>
+        <h2>Shadow</h2>
+        <label class="check"><input id="shadow" type="checkbox" /> Drop shadow</label>
+        <label class="field">
+          <span class="row"><span>Color</span></span>
+          <input id="shadowColor" type="color" value="#000000" />
+        </label>
+        <label class="field">
+          <span class="row"><span>Opacity</span><output id="shadowOpacityOut">0.35</output></span>
+          <input id="shadowOpacity" type="range" min="0" max="1" step="0.01" value="0.35" />
+        </label>
+        <label class="field">
+          <span class="row"><span>Blur</span><output id="shadowBlurOut">28</output></span>
+          <input id="shadowBlur" type="range" min="0" max="80" step="1" value="28" />
+        </label>
+        <label class="field">
+          <span class="row"><span>Offset X</span><output id="shadowXOut">0</output></span>
+          <input id="shadowX" type="range" min="-80" max="80" step="1" value="0" />
+        </label>
+        <label class="field">
+          <span class="row"><span>Offset Y</span><output id="shadowYOut">18</output></span>
+          <input id="shadowY" type="range" min="-80" max="80" step="1" value="18" />
+        </label>
+      </section>
+    </aside>
+  </main>
+  <section class="ad-rail ad-rail-bottom" aria-label="Advertisement">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle ad-slot"
+      style="display:block"
+      data-ad-client="ca-pub-2208763018652673"
+      data-ad-slot="auto"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+  </section>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

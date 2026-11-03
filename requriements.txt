@@ -1,0 +1,9 @@
+I want to create a simple html page to remove background of an image. 
+I want to use here internally. The following feature.
+
+1. The tool must be able to remove background and introduce transparent background.
+2. The tool must have all features present in tools like adobe firely and others to remove background
+3. The page must give options to download from lowest resolution to highest. 
+4. compare all best tools online and implement such features
+5. All the code must run locally in the browser. You can use advanced technology like webworkers, session etc.,
+6. The converter must be atleast 2x faster than available tools.
