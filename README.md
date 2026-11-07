@@ -1,4 +1,4 @@
-# Cutout — local background removal
+# Cutout
 
 Everything runs in the browser on your machine. Photos are never uploaded.
 
@@ -42,8 +42,5 @@ Shortcuts: `E` erase, `R` restore, `H` pan, `[` `]` brush size, `Ctrl+Z` / `Ctrl
 
 ## Notes
 
-- `@imgly/background-removal` is AGPL-licensed; check that is acceptable for your internal use.
-- AdSense rails are included above and below the editor. AdSense may not serve ads on localhost; configure the publisher account and production domain before release.
-- Google Analytics is configured with measurement ID `G-BCKTBN727F`; update your privacy notice and consent flow as required before public launch.
-- The page includes a descriptive title, meta description, and natural search phrase near the brand for background-removal SEO.
-- Hair and fur edges: use Detail mode, then the Erase/Restore brush and Defringe.
+- `@imgly/background-removal` is AGPL-licensed and is used in this project
+
