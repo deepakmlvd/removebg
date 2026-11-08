@@ -1,0 +1,13 @@
+{
+  "name": "cutout",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node serve.mjs dist"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "javascript-obfuscator": "^4.1.1"
+  }
+}

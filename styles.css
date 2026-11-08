@@ -1,15 +1,15 @@
 :root {
-  --bg: #101310;
-  --panel: #181c18;
-  --panel-2: #232923;
-  --line: #343c34;
-  --text: #f4f1e8;
-  --muted: #a3ada3;
-  --accent: #d6f25c;
-  --accent-ink: #1a2208;
-  --danger: #ff7d66;
-  --radius: 10px;
-  --font: "Segoe UI Variable Text", "Segoe UI", sans-serif;
+  --bg: #0f1220;
+  --panel: #171a2e;
+  --panel-2: #1d2140;
+  --line: #2a2f55;
+  --text: #e6e8f5;
+  --muted: #8a90b8;
+  --accent: #00b9f1;
+  --accent-ink: #06131b;
+  --danger: #ff4d4f;
+  --radius: 8px;
+  --font: system-ui, "Segoe UI", Roboto, sans-serif;
   color-scheme: dark;
 }
 
@@ -21,8 +21,6 @@ html, body {
 }
 
 body {
-  display: flex;
-  flex-direction: column;
   background: var(--bg);
   color: var(--text);
   font: 14px/1.45 var(--font);
@@ -33,12 +31,12 @@ button, select, input { font: inherit; color: inherit; }
 button {
   background: var(--panel-2);
   border: 1px solid var(--line);
-  border-radius: 9px;
-  padding: 8px 10px;
+  border-radius: 6px;
+  padding: 6px 12px;
   cursor: pointer;
 }
 
-button:hover { border-color: #5c695c; }
+button:hover { border-color: var(--accent); }
 
 button:focus-visible, select:focus-visible, input:focus-visible {
   outline: 2px solid var(--accent);
@@ -46,10 +44,9 @@ button:focus-visible, select:focus-visible, input:focus-visible {
 }
 
 button.primary {
-  background: var(--accent);
+  background: #0a6ea0;
   color: var(--accent-ink);
-  border-color: transparent;
-  font-weight: 650;
+  border-color: #0a6ea0;
 }
 
 button.is-on {
@@ -82,10 +79,10 @@ input[type="range"] {
 [hidden] { display: none !important; }
 
 .banner {
-  background: #3a2a12;
-  color: #ffe7bf;
+  background: #2b1d3d;
+  color: #e6e8f5;
   padding: 10px 16px;
-  border-bottom: 1px solid #6a4c22;
+  border-bottom: 1px solid #4d3568;
 }
 
 .banner code {
@@ -97,8 +94,9 @@ input[type="range"] {
   display: flex;
   align-items: center;
   gap: 18px;
-  padding: 12px 16px;
+  padding: 10px 18px;
   border-bottom: 1px solid var(--line);
+  background: var(--panel);
 }
 
 .ad-rail {
@@ -107,7 +105,7 @@ input[type="range"] {
   display: grid;
   place-items: center;
   padding: 8px 16px;
-  background: #141814;
+  background: #0b0d1a;
   border-bottom: 1px solid var(--line);
 }
 
@@ -130,6 +128,25 @@ input[type="range"] {
   font-size: 9px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.tools-embed {
+  padding: 16px 18px 18px;
+  background: var(--bg);
+}
+
+.tools-embed h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.tools-embed iframe {
+  display: block;
+  width: 100%;
+  height: 430px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
 }
 
 .brand { display: flex; align-items: center; gap: 10px; min-width: 220px; }
@@ -158,11 +175,14 @@ input[type="range"] {
 }
 
 .workspace {
-  flex: 1;
+  height: clamp(560px, calc(100vh - 150px), 680px);
   min-height: 0;
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr) 320px;
+  background: var(--bg);
 }
+
+.workspace > * { min-height: 0; }
 
 .panel {
   overflow: auto;
@@ -206,7 +226,7 @@ input[type="range"] {
   position: relative;
   min-width: 0;
   min-height: 0;
-  background: radial-gradient(circle at 50% 42%, #242b24, #0e110e 72%);
+  background: radial-gradient(circle at 50% 42%, #242957, #0b0d1a 72%);
   overflow: hidden;
   touch-action: none;
 }
@@ -270,7 +290,7 @@ input[type="range"] {
   align-items: center;
   gap: 12px;
   padding: 8px 10px;
-  background: rgba(16, 19, 16, 0.86);
+  background: rgba(23, 26, 46, 0.92);
   border: 1px solid var(--line);
   border-radius: 12px;
   backdrop-filter: blur(8px);
@@ -301,7 +321,7 @@ input[type="range"] {
   top: 12px;
   height: 4px;
   border-radius: 99px;
-  background: #2c332c;
+  background: #0b0d1a;
   overflow: hidden;
 }
 
@@ -364,7 +384,7 @@ body.dragover .stage { outline: 2px solid var(--accent); outline-offset: -8px; }
   html, body { height: auto; min-height: 100%; }
   .ad-rail { min-height: 76px; padding-inline: 8px; }
   .ad-slot { min-height: 58px; }
-  .workspace { display: flex; flex-direction: column; min-height: 0; }
+  .workspace { display: flex; flex-direction: column; height: auto; min-height: 0; }
   .stage { order: -1; height: 72vh; min-height: 420px; flex: none; }
   .panel { overflow: visible; border-right: 0; border-bottom: 1px solid var(--line); }
   .panel-right { border-left: 0; }

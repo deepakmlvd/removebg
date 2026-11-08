@@ -8,6 +8,18 @@ Everything runs in the browser on your machine. Photos are never uploaded.
 .\start.ps1
 ```
 
+## Production build
+
+Install the build dependencies once, then generate the deployable, minimized output:
+
+```powershell
+npm install
+npm run build
+npm start
+```
+
+The deployment files are written to `dist/`. JavaScript and CSS are minimized; the application and worker are additionally obfuscated. The `vendor/` and `assets/` directories are copied unchanged because the runtime and model resources must retain their expected names and license notices.
+
 The first run downloads the model and ONNX runtime (about 330 MB, via `setup.mjs`). Startup verifies all model files and resumes an incomplete download if needed, so a partially interrupted setup is repaired automatically. After that it works offline. Open `http://127.0.0.1:8765`. The page must be served over http (not opened as a file) so the worker, WebGPU and multi-threading can start.
 
 ## Features
@@ -46,4 +58,5 @@ Shortcuts: `E` erase, `R` restore, `H` pan, `[` `]` brush size, `Ctrl+Z` / `Ctrl
 - AdSense rails are included above and below the editor. AdSense may not serve ads on localhost; configure the publisher account and production domain before release.
 - Google Analytics is configured with measurement ID `G-BCKTBN727F`; update your privacy notice and consent flow as required before public launch.
 - The page includes a descriptive title, meta description, and natural search phrase near the brand for background-removal SEO.
+- The production host allowlist includes `removebg.hipalab.com`; localhost and `127.0.0.1` remain available for local development. Other hosts render a blank page.
 - Hair and fur edges: use Detail mode, then the Erase/Restore brush and Defringe.

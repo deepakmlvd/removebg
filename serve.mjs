@@ -3,7 +3,9 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = path.dirname(fileURLToPath(import.meta.url));
+const root = process.argv[2]
+  ? path.resolve(process.argv[2])
+  : path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 8765);
 const types = {
   ".html": "text/html; charset=utf-8",
@@ -45,6 +47,7 @@ const server = http.createServer((req, res) => {
       "Cross-Origin-Opener-Policy": "same-origin",
       "Cross-Origin-Embedder-Policy": "require-corp",
       "Cross-Origin-Resource-Policy": "same-origin",
+      "Content-Security-Policy": "frame-src https://crimson-leaf-8d4b.deepakmlvd.workers.dev;",
       "Cache-Control": immutable ? "public, max-age=31536000, immutable" : "no-cache",
     });
     res.end(data);

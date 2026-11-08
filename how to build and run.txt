@@ -1,0 +1,3 @@
+npm.cmd install
+npm.cmd run build
+npm.cmd start
